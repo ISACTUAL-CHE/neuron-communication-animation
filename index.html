@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cartoon Neuron Communication</title>
+  <style>
+    :root {
+      --sky: #f4fbff;
+      --sky2: #dff7ff;
+      --bg: #d5f3ff;
+      --neuron-left: #8ed8ff;
+      --neuron-left-dark: #4cb4f2;
+      --neuron-right: #a9f0b4;
+      --neuron-right-dark: #47c77a;
+      --axon: #69c7ff;
+      --calcium: #ff8a65;
+      --vesicle: #cf93ff;
+      --neuro: #ffe082;
+      --synapse: #f0faff;
+      --receptor: #7ce6b4;
+      --shadow: rgba(0, 0, 0, 0.12);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(180deg, var(--sky), var(--sky2));
+      font-family: "Trebuchet MS", Arial, sans-serif;
+      overflow: hidden;
+    }
+
+    .stage {
+      position: relative;
+      width: min(96vw, 1200px);
+      height: min(72vw, 560px);
+      min-height: 420px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.4), rgba(255,255,255,0.1));
+      border-radius: 28px;
+      box-shadow: 0 18px 35px rgba(17, 72, 92, 0.12);
+      border: 4px solid rgba(90, 170, 210, 0.25);
+      overflow: hidden;
+    }
+
+    svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .caption {
+      position: absolute;
+      left: 50%;
+      top: 18px;
+      transform: translateX(-50%);
+      background: rgba(255,255,255,0.75);
+      border-radius: 999px;
+      padding: 8px 18px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #1a4d69;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      box-shadow: 0 8px 18px rgba(80,180,220,0.15);
+    }
+
+    .button {
+      position: absolute;
+      bottom: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      border: none;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #86d9ff, #c88cff);
+      color: #18384d;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 12px 22px;
+      cursor: pointer;
+      box-shadow: 0 10px 25px rgba(111, 176, 234, 0.35);
+    }
+
+    .pulse {
+      fill: none;
+      stroke: #2ca8f9;
+      stroke-width: 5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      opacity: 0;
+      filter: drop-shadow(0 0 10px rgba(44, 168, 249, 0.8));
+    }
+
+    .spark {
+      fill: #fff176;
+      opacity: 0;
+    }
+
+    .label {
+      font-size: 18px;
+      font-weight: 700;
+      fill: #245b7d;
+    }
+
+    .tiny {
+      font-size: 14px;
+      font-weight: 700;
+      fill: #245b7d;
+    }
+
+    .calcium {
+      fill: var(--calcium);
+      opacity: 0.9;
+      filter: drop-shadow(0 0 8px rgba(255, 138, 101, 0.7));
+    }
+
+    .vesicle {
+      fill: var(--vesicle);
+      opacity: 0.9;
+      stroke: rgba(255,255,255,0.9);
+      stroke-width: 2;
+    }
+
+    .neuro {
+      fill: var(--neuro);
+      opacity: 0;
+      filter: drop-shadow(0 0 8px rgba(255, 224, 130, 0.9));
+    }
+
+    .receptor {
+      fill: rgba(124, 230, 180, 0.2);
+      stroke: var(--receptor);
+      stroke-width: 3;
+    }
+  </style>
+</head>
+<body>
+  <div class="stage">
+    <div class="caption">Neuron communication</div>
+
+    <svg viewBox="0 0 1200 520" aria-label="Cartoon neuron communication animation">
+      <defs>
+        <filter id="softGlow">
+          <feGaussianBlur stdDeviation="5" result="blur" />
+          <feMerge>
+            <feMergeNode in="blur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+      </defs>
+
+      <!-- Left neuron -->
+      <g id="leftNeuron">
+        <ellipse cx="190" cy="260" rx="110" ry="120" fill="rgba(142,216,255,0.35)" stroke="#5bb7ef" stroke-width="4"/>
+        <path d="M300 260 H620" stroke="#69c7ff" stroke-width="10" stroke-linecap="round" fill="none"/>
+        <path d="M620 260 H700" stroke="#69c7ff" stroke-width="8" stroke-dasharray="12 14" stroke-linecap="round" fill="none" opacity="0.8"/>
+      </g>
+
+      <!-- Right neuron -->
+      <g id="rightNeuron">
+        <ellipse cx="1020" cy="260" rx="110" ry="120" fill="rgba(169,240,180,0.3)" stroke="#52ca7f" stroke-width="4"/>
+        <path d="M880 260 H760" stroke="#7ddca6" stroke-width="6" stroke-dasharray="12 12" fill="none" opacity="0.9"/>
+      </g>
+
+      <!-- Synaptic cleft -->
+      <g>
+        <rect x="700" y="180" width="170" height="160" rx="18" fill="rgba(255,255,255,0.15)" stroke="rgba(100,170,210,0.5)" stroke-width="3"/>
+      </g>
+
+      <!-- Receptors -->
+      <g id="receptors">
+        <g transform="translate(780 215)">
+          <rect class="receptor" x="0" y="0" width="30" height="22" rx="8"/>
+        </g>
+        <g transform="translate(780 265)">
+          <rect class="receptor" x="0" y="0" width="30" height="22" rx="8"/>
+        </g>
+        <g transform="translate(780 315)">
+          <rect class="receptor" x="0" y="0" width="30" height="22" rx="8"/>
+        </g>
+      </g>
+
+      <!-- Label text -->
+      <text class="label" x="70" y="70">PRE-SYNAPTIC</text>
+      <text class="label" x="940" y="70">POST-SYNAPTIC</text>
+      <text class="tiny" x="740" y="155">SYNAPTIC CLEFT</text>
+
+      <!-- A special animation layer -->
+      <g id="pulseGroup"></g>
+      <g id="calciumGroup"></g>
+      <g id="vesicleGroup"></g>
+      <g id="neuroGroup"></g>
+      <g id="sparkGroup"></g>
+    </svg>
+
+    <button class="button" type="button" id="replayBtn">Replay</button>
+  </div>
+
+  <script>
+    const pulseGroup = document.getElementById('pulseGroup');
+    const calciumGroup = document.getElementById('calciumGroup');
+    const vesicleGroup = document.getElementById('vesicleGroup');
+    const neuroGroup = document.getElementById('neuroGroup');
+    const sparkGroup = document.getElementById('sparkGroup');
+    const replayBtn = document.getElementById('replayBtn');
+
+    const calciumNodes = [];
+    const vesicles = [];
+    const neurotransmitters = [];
+
+    function makeCircle(className, r, cx, cy) {
+      const el = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      el.setAttribute('class', className);
+      el.setAttribute('r', r);
+      el.setAttribute('cx', cx);
+      el.setAttribute('cy', cy);
+      return el;
+    }
+
+    function makeBlinkSpark(x, y, color = '#ffe082') {
+      const s = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      s.setAttribute('class', 'spark');
+      s.setAttribute('fill', color);
+      s.setAttribute('r', '6');
+      s.setAttribute('cx', x);
+      s.setAttribute('cy', y);
+      sparkGroup.appendChild(s);
+      return s;
+    }
+
+    function resetScene() {
+      pulseGroup.innerHTML = '';
+      calciumGroup.innerHTML = '';
+      vesicleGroup.innerHTML = '';
+      neuroGroup.innerHTML = '';
+      sparkGroup.innerHTML = '';
+
+      const pulse = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      pulse.setAttribute('class', 'pulse');
+      pulse.setAttribute('d', 'M250 260 C305 260, 350 260, 420 260 S550 260, 620 260');
+      pulseGroup.appendChild(pulse);
+
+      calciumNodes.length = 0;
+      vesicles.length = 0;
+      neurotransmitters.length = 0;
+
+      for (let i = 0; i < 10; i++) {
+        const c = makeCircle('calcium', 7, 620 + i * 6, 250 + (i % 2 === 0 ? 18 : -18));
+        calciumGroup.appendChild(c);
+        calciumNodes.push(c);
+      }
+
+      for (let i = 0; i < 6; i++) {
+        const v = makeCircle('vesicle', 13 + (i % 3), 620 + i * 18, 260 + (i % 2 === 0 ? 30 : -35));
+        vesicleGroup.appendChild(v);
+        vesicles.push(v);
+      }
+
+      for (let i = 0; i < 16; i++) {
+        const n = makeCircle('neuro', 6, 700 + i * 6, 260 + (i % 4) * 12 - 18);
+        neuroGroup.appendChild(n);
+        neurotransmitters.push(n);
+      }
+    }
+
+    function animate() {
+      resetScene();
+      const pulse = pulseGroup.querySelector('.pulse');
+      let started = null;
+      const totalDuration = 6200;
+
+      function frame(ts) {
+        if (started === null) started = ts;
+        const elapsed = ts - started;
+        const p = Math.min(elapsed / totalDuration, 1);
+
+        // 1) Electrical signal travels down axon
+        const x = 250 + p * 380;
+        const y = 260 + Math.sin(p * 20) * 8;
+        pulse.setAttribute('d', `M250 260 C310 260, 350 ${y}, ${x} ${y} S545 ${y}, 620 260`);
+        pulse.setAttribute('opacity', Math.max(0, 1 - Math.abs(p - 0.38) * 2.5));
+
+        if (p > 0.28) {
+          const calciumP = (p - 0.28) / 0.22;
+          calciumNodes.forEach((node, i) => {
+            const targetX = 620 + i * 6 + calciumP * 45;
+            const targetY = 260 + Math.sin((p * 30) + i) * 22;
+            node.setAttribute('cx', targetX);
+            node.setAttribute('cy', targetY);
+            node.setAttribute('opacity', Math.min(1, calciumP * 1.5));
+            node.setAttribute('r', 7 + calciumP * 4);
+          });
+        }
+
+        if (p > 0.48) {
+          const vesicleP = (p - 0.48) / 0.2;
+          vesicles.forEach((v, i) => {
+            const startX = 620 + i * 18;
+            const startY = 260 + (i % 2 === 0 ? 30 : -35);
+            const endX = 660 + i * 10;
+            const endY = 260 + (i % 2 === 0 ? 12 : -12);
+            v.setAttribute('cx', startX + vesicleP * (endX - startX));
+            v.setAttribute('cy', startY + vesicleP * (endY - startY));
+            v.setAttribute('opacity', Math.min(1, vesicleP * 1.5));
+          });
+        }
+
+        if (p > 0.62) {
+          const neuroP = (p - 0.62) / 0.18;
+          neurotransmitters.forEach((n, i) => {
+            const startX = 690 + i * 5;
+            const startY = 260 + ((i % 5) - 2) * 16;
+            const endX = 720 + i * 4;
+            const endY = 255 + (i % 3) * 22;
+
+            const x = startX + neuroP * (endX - startX);
+            const y = startY + neuroP * (endY - startY);
+
+            n.setAttribute('cx', x);
+            n.setAttribute('cy', y);
+            n.setAttribute('opacity', Math.min(1, neuroP * 1.9));
+            n.setAttribute('r', 5 + (1 - neuroP) * 3);
+          });
+        }
+
+        if (p > 0.72) {
+          const bindP = (p - 0.72) / 0.18;
+          neurotransmitters.forEach((n, i) => {
+            const x = 790 + (i % 4) * 16 + bindP * 3;
+            const y = 225 + (i % 6) * 15 + bindP * 12;
+            n.setAttribute('cx', x);
+            n.setAttribute('cy', y);
+            n.setAttribute('opacity', Math.max(0.2, 1 - bindP * 0.7));
+          });
+        }
+
+        if (p > 0.35 && p < 0.52) {
+          const sparkP = (p - 0.35) / 0.17;
+          const spark = makeBlinkSpark(640 + sparkP * 40, 260 + Math.sin(sparkP * 16) * 18, '#fff9a8');
+          spark.setAttribute('opacity', 0.8 - sparkP * 0.7);
+          spark.setAttribute('r', 6 + sparkP * 12);
+          setTimeout(() => spark.remove(), 120);
+        }
+
+        if (p < 1) {
+          requestAnimationFrame(frame);
+        }
+      }
+
+      requestAnimationFrame(frame);
+    }
+
+    replayBtn.addEventListener('click', animate);
+    animate();
+  </script>
+</body>
+</html>
